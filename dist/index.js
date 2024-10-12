@@ -16,15 +16,24 @@ const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const body_parser_1 = __importDefault(require("body-parser"));
 const tokenhandler_1 = require("./Handlers/tokenhandler");
-const fs_1 = __importDefault(require("fs"));
-const privatekey = fs_1.default.readFileSync('./private.key', 'utf8');
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const cors_1 = __importDefault(require("cors"));
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
+const cookieparser = (0, cookie_parser_1.default)();
+app.use(cookieparser);
+app.use((0, cors_1.default)({
+    origin: ["*",],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'user-agent', 'X-Client-Type']
+}));
 var a = body_parser_1.default.json();
 app.listen(3000, () => {
     console.log("Listening");
 });
 app.post("/auth/signin", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const { username, password } = req.body;
         const user = yield prisma.users.findFirst({
@@ -33,19 +42,41 @@ app.post("/auth/signin", a, (req, res) => __awaiter(void 0, void 0, void 0, func
             }
         });
         if (user) {
-            const payload = {
-                username: user.username,
-                email: user.email,
-                phoneNumber: user.phoneNumber,
-                createdAt: user.createdAt
-            };
-            const token = (0, tokenhandler_1.signAccessToken)(payload);
             if (user.password === password) {
-                res.send({
-                    status: "200",
-                    message: "signin successfull",
-                    accessToken: token
-                });
+                const payload = {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    phoneNumber: user.phoneNumber,
+                    createdAt: user.createdAt
+                };
+                const accessToken = (0, tokenhandler_1.signAccessToken)(payload);
+                const refreshToken = (0, tokenhandler_1.signRefreshToken)(payload);
+                const isMobile = ((_a = req.headers['user-agent']) === null || _a === void 0 ? void 0 : _a.includes('Mobile')) || req.headers['X-Client-Type'] === 'mobile';
+                if (isMobile) {
+                    res.send({
+                        status: "200",
+                        message: "signin successfull",
+                        accessToken: accessToken,
+                        refreshToken: refreshToken
+                    });
+                }
+                else {
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict"
+                    });
+                    res.cookie("refreshToken", refreshToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict"
+                    });
+                    res.send({
+                        status: "200",
+                        message: "signin successfull",
+                    });
+                }
                 return;
             }
         }
@@ -100,11 +131,18 @@ app.post("/auth/create-account", a, (req, res) => __awaiter(void 0, void 0, void
     }
 }));
 app.get("/auth/verifyToken", (req, res) => {
+    var _a;
     try {
-        const token = req.headers["authorization"];
+        const isMobile = ((_a = req.headers['user-agent']) === null || _a === void 0 ? void 0 : _a.includes('Mobile')) || req.headers['X-Client-Type'] === 'mobile';
+        var token = null;
+        if (isMobile) {
+            token = req.headers["authorization"];
+        }
+        else {
+            token = req.cookies.refreshToken;
+        }
         if (token) {
             const verify = (0, tokenhandler_1.verifyToken)(token);
-            console.log("verify : ", verify);
             if (verify) {
                 res.send({
                     status: "200",
@@ -113,10 +151,76 @@ app.get("/auth/verifyToken", (req, res) => {
             }
             return;
         }
+        res.send({
+            status: "401",
+            message: "No Token Found"
+        });
     }
     catch (err) {
         res.send({
             status: "401",
+            message: err.message
+        });
+    }
+});
+app.get("/auth/refreshToken", (req, res) => {
+    var _a;
+    try {
+        const isMobile = ((_a = req.headers['user-agent']) === null || _a === void 0 ? void 0 : _a.includes('Mobile')) || req.headers['X-Client-Type'] === 'mobile';
+        var refreshToken = null;
+        if (isMobile) {
+            refreshToken = req.headers["authorization"];
+        }
+        else {
+            refreshToken = req.cookies.refreshToken;
+        }
+        if (refreshToken) {
+            const verify = (0, tokenhandler_1.verifyToken)(refreshToken);
+            if (verify) {
+                const accessToken = (0, tokenhandler_1.reSignAccessToken)(refreshToken);
+                if (!accessToken) {
+                    res.send({
+                        status: "402",
+                        message: "payload defected"
+                    });
+                    return;
+                }
+                if (isMobile) {
+                    res.send({
+                        status: "200",
+                        message: "Token Reassigned successfully",
+                        accessToken: accessToken
+                    });
+                }
+                else {
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict"
+                    });
+                    res.send({
+                        status: "200",
+                        message: "Token Reassigned successfully"
+                    });
+                }
+            }
+            else {
+                res.send({
+                    status: "401",
+                    message: "invalid token"
+                });
+            }
+        }
+        else {
+            res.send({
+                status: "400",
+                messge: "Token Missing"
+            });
+        }
+    }
+    catch (err) {
+        res.send({
+            status: "405",
             message: err.message
         });
     }
