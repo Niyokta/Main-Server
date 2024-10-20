@@ -4,22 +4,27 @@ import bodyParser from "body-parser";
 import { reSignAccessToken, signAccessToken, signRefreshToken, verifyToken } from "./Handlers/tokenhandler";
 import cookieParser from "cookie-parser"
 import cors from "cors"
+import { createNewProject, deleteProject, findProject, findProjects,projectPayload } from "./Handlers/projecthandler";
 
 const prisma = new PrismaClient()
 const app = express();
-const cookieparser=cookieParser()
+const cookieparser = cookieParser()
 app.use(cookieparser)
 app.use(cors({
-    origin:["*",],
-    methods:['GET','POST','PUT','DELETE'],
-    credentials:true,
-    allowedHeaders:['Content-Type','Authorization','user-agent','X-Client-Type']
+    origin: ["*",],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'user-agent', 'X-Client-Type']
 }))
 var a = bodyParser.json()
 
 app.listen(3000, () => {
     console.log("Listening")
 })
+
+
+//Authentication Endpoints
+
 
 app.post("/auth/signin", a, async (req: Request, res) => {
     try {
@@ -33,7 +38,7 @@ app.post("/auth/signin", a, async (req: Request, res) => {
         if (user) {
             if (user.password === password) {
                 const payload = {
-                    id:user.id,
+                    id: user.id,
                     username: user.username,
                     email: user.email,
                     phoneNumber: user.phoneNumber,
@@ -42,31 +47,31 @@ app.post("/auth/signin", a, async (req: Request, res) => {
                 const accessToken = signAccessToken(payload)
                 const refreshToken = signRefreshToken(payload)
                 const isMobile = req.headers['user-agent']?.includes('Mobile') || req.headers['X-Client-Type'] === 'mobile';
-                if(isMobile){
+                if (isMobile) {
                     res.send({
                         status: "200",
                         message: "signin successfull",
                         accessToken: accessToken,
-                        refreshToken:refreshToken
+                        refreshToken: refreshToken
                     })
                 }
-                else{
-                    res.cookie("accessToken",accessToken,{
-                        httpOnly:true,
-                        secure:true,
-                        sameSite:"strict"
+                else {
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict"
                     })
-                    res.cookie("refreshToken",refreshToken,{
-                        httpOnly:true,
-                        secure:true,
-                        sameSite:"strict"
+                    res.cookie("refreshToken", refreshToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict"
                     })
                     res.send({
                         status: "200",
                         message: "signin successfull",
                     })
                 }
-                
+
                 return
             }
         }
@@ -126,11 +131,11 @@ app.post("/auth/create-account", a, async (req: Request, res) => {
 app.get("/auth/verifyToken", (req, res) => {
     try {
         const isMobile = req.headers['user-agent']?.includes('Mobile') || req.headers['X-Client-Type'] === 'mobile';
-        var token=null
-        if(isMobile){
-            token=req.headers["authorization"]
+        var token = null
+        if (isMobile) {
+            token = req.headers["authorization"]
         }
-        else{
+        else {
             token = req.cookies.refreshToken
         }
         if (token) {
@@ -144,13 +149,13 @@ app.get("/auth/verifyToken", (req, res) => {
             return
         }
         res.send({
-            status:"401",
-            message:"No Token Found"
+            status: "401",
+            message: "No Token Found"
         })
     }
     catch (err: any) {
         res.send({
-            status: "401",
+            status: "400",
             message: err.message
         })
     }
@@ -160,40 +165,40 @@ app.get("/auth/verifyToken", (req, res) => {
 app.get("/auth/refreshToken", (req, res) => {
     try {
         const isMobile = req.headers['user-agent']?.includes('Mobile') || req.headers['X-Client-Type'] === 'mobile';
-        var refreshToken=null
-        if(isMobile){
-            refreshToken=req.headers["authorization"]
+        var refreshToken = null
+        if (isMobile) {
+            refreshToken = req.headers["authorization"]
         }
-        else{
+        else {
             refreshToken = req.cookies.refreshToken
         }
         if (refreshToken) {
             const verify = verifyToken(refreshToken)
             if (verify) {
-                const accessToken=reSignAccessToken(refreshToken)
-                if(!accessToken){
+                const accessToken = reSignAccessToken(refreshToken)
+                if (!accessToken) {
                     res.send({
-                        status:"402",
-                        message:"payload defected"
+                        status: "402",
+                        message: "payload defected"
                     })
                     return
                 }
-                if(isMobile){
+                if (isMobile) {
                     res.send({
                         status: "200",
-                        message:"Token Reassigned successfully",
-                        accessToken:accessToken
+                        message: "Token Reassigned successfully",
+                        accessToken: accessToken
                     })
                 }
-                else{
-                    res.cookie("accessToken",accessToken,{
-                        httpOnly:true,
-                        secure:true,
-                        sameSite:"strict"
+                else {
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict"
                     })
                     res.send({
                         status: "200",
-                        message:"Token Reassigned successfully"
+                        message: "Token Reassigned successfully"
                     })
                 }
             }
@@ -204,10 +209,10 @@ app.get("/auth/refreshToken", (req, res) => {
                 })
             }
         }
-        else{
+        else {
             res.send({
-                status:"400",
-                messge:"Token Missing"
+                status: "400",
+                messge: "Token Missing"
             })
         }
     }
@@ -215,6 +220,80 @@ app.get("/auth/refreshToken", (req, res) => {
         res.send({
             status: "405",
             message: err.message
+        })
+    }
+})
+
+
+
+
+//Project Endpoints
+
+app.post("/project/getProject",a,async (req: Request, res) => {
+    try {
+        const { projectID } = req.body
+
+        const project = await findProject(projectID)
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send(err.message))
+    }
+    catch (err: any) {
+        res.send({
+            status: 400,
+            message: err.message
+        })
+    }
+})
+
+app.post("/project/getProjects",a,async(req:Request,res)=>{
+    try{
+        const {cleintID}=req.body
+
+        const projects=await findProjects(cleintID)
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send(err.message))
+    }
+    catch(err:any){
+        res.send({
+            status:400,
+            message:err.message
+        })
+    }
+})
+
+app.post("/project/createProject",a,async(req:Request,res)=>{
+    try{
+        const {title,description,client_id,max_budget}=req.body
+        const payload:projectPayload={
+            title:title,
+            description:description,
+            client_id:client_id,
+            max_budget:max_budget
+        }
+        const newProject=await createNewProject({title,description,client_id,max_budget})
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send(err.message))
+    }
+    catch(err:any){
+        res.send({
+            status:400,
+            message:err.message
+        })
+    }
+})
+
+app.post("/project/deleteProject",a,async(req:Request,res)=>{
+    try{
+        const {projectID}=req.body
+
+        const deleteproject=await deleteProject(projectID)
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send(err.message))
+    }
+    catch(err:any){
+        res.send({
+            status:400,
+            message:err.message
         })
     }
 })

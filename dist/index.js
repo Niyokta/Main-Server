@@ -18,6 +18,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const tokenhandler_1 = require("./Handlers/tokenhandler");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
+const projecthandler_1 = require("./Handlers/projecthandler");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const cookieparser = (0, cookie_parser_1.default)();
@@ -32,6 +33,7 @@ var a = body_parser_1.default.json();
 app.listen(3000, () => {
     console.log("Listening");
 });
+//Authentication Endpoints
 app.post("/auth/signin", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -158,7 +160,7 @@ app.get("/auth/verifyToken", (req, res) => {
     }
     catch (err) {
         res.send({
-            status: "401",
+            status: "400",
             message: err.message
         });
     }
@@ -225,3 +227,66 @@ app.get("/auth/refreshToken", (req, res) => {
         });
     }
 });
+//Project Endpoints
+app.post("/project/getProject", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { projectID } = req.body;
+        const project = yield (0, projecthandler_1.findProject)(projectID)
+            .then((response) => res.send(response))
+            .catch((err) => res.send(err.message));
+    }
+    catch (err) {
+        res.send({
+            status: 400,
+            message: err.message
+        });
+    }
+}));
+app.post("/project/getProjects", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { cleintID } = req.body;
+        const projects = yield (0, projecthandler_1.findProjects)(cleintID)
+            .then((response) => res.send(response))
+            .catch((err) => res.send(err.message));
+    }
+    catch (err) {
+        res.send({
+            status: 400,
+            message: err.message
+        });
+    }
+}));
+app.post("/project/createProject", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { title, description, client_id, max_budget } = req.body;
+        const payload = {
+            title: title,
+            description: description,
+            client_id: client_id,
+            max_budget: max_budget
+        };
+        const newProject = yield (0, projecthandler_1.createNewProject)({ title, description, client_id, max_budget })
+            .then((response) => res.send(response))
+            .catch((err) => res.send(err.message));
+    }
+    catch (err) {
+        res.send({
+            status: 400,
+            message: err.message
+        });
+    }
+}));
+app.post("/project/deleteProject", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { projectID } = req.body;
+        const deleteproject = yield (0, projecthandler_1.deleteProject)(projectID)
+            .then((response) => res.send(response))
+            .catch((err) => res.send(err.message));
+    }
+    catch (err) {
+        res.send({
+            status: 400,
+            message: err.message
+        });
+    }
+}));

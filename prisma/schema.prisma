@@ -23,3 +23,41 @@ model Users {
   email      String @unique
   phoneNumber Int @unique @default(0000000000)
 }
+
+model Project {
+  project_id      Int      @id @default(autoincrement())
+  title           String
+  description     String
+  client_id       Int
+  category        String[] @default([])
+  skills_required String[] @default([])
+  max_budget      Int
+  status          String @default("pending")
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  assigned_to     Int?
+  closing_price   Int?
+  proposal_count  Int      @default(0)
+  completed_at    DateTime?
+  payment_status  Boolean @default(false)
+  bids            Bid[]
+
+  @@index([client_id])
+}
+
+model Bid {
+  bid_id          Int      @id @default(autoincrement())  
+  freelancer_id   Int                                     
+  project_id      Int                                     
+  bidding_price   Int                                    
+  freelancer_name String                              
+  proposal        String                        
+  completion_time DateTime?                            
+  status          String   @default("pending")           
+  submitted_at    DateTime @default(now())                
+  client_rating   Int?                                   
+  is_active       Boolean @default(true)                       
+
+  project         Project  @relation(fields: [project_id], references: [project_id]) 
+  @@index([project_id])                                   
+}
