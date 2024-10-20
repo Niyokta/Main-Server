@@ -19,6 +19,7 @@ const tokenhandler_1 = require("./Handlers/tokenhandler");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const projecthandler_1 = require("./Handlers/projecthandler");
+const bidhandler_1 = require("./Handlers/bidhandler");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const cookieparser = (0, cookie_parser_1.default)();
@@ -259,12 +260,6 @@ app.post("/project/getProjects", a, (req, res) => __awaiter(void 0, void 0, void
 app.post("/project/createProject", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, description, client_id, max_budget } = req.body;
-        const payload = {
-            title: title,
-            description: description,
-            client_id: client_id,
-            max_budget: max_budget
-        };
         const newProject = yield (0, projecthandler_1.createNewProject)({ title, description, client_id, max_budget })
             .then((response) => res.send(response))
             .catch((err) => res.send(err.message));
@@ -288,5 +283,60 @@ app.post("/project/deleteProject", a, (req, res) => __awaiter(void 0, void 0, vo
             status: 400,
             message: err.message
         });
+    }
+}));
+//bid Endpoints
+app.post("/bid/getBid", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { bidID } = req.body;
+        const getbid = yield (0, bidhandler_1.findBid)(bidID)
+            .then((response) => res.send(response))
+            .catch((err) => { res.send({ status: 400, message: err.message }); });
+    }
+    catch (err) {
+        res.send({
+            status: 400,
+            message: err.message
+        });
+    }
+}));
+app.post("/bid/getBids", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { projectID } = req.body;
+        const bids = yield (0, bidhandler_1.findBids)(projectID)
+            .then((response) => res.send(response))
+            .catch((err) => res.send({ status: 400, messsage: err.message }));
+    }
+    catch (err) {
+        res.send({ status: 400, message: err.message });
+    }
+}));
+app.post("/bid/placeBid", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { freelancerID, projectID, bidingPrice, freelancerName, proposal } = req.body;
+        // const payload:bidPayload={
+        //     freelancerID:freelancer_id,
+        //     projectID:project_id,
+        //     bidingPrice:bidding_price,
+        //     freelancerName:freelancer_name,
+        //     proposal:proposal
+        // }
+        const newBid = yield (0, bidhandler_1.placeBid)({ freelancerID, projectID, bidingPrice, freelancerName, proposal })
+            .then((response) => res.send(response))
+            .catch((err) => res.send({ status: 400, message: err.message }));
+    }
+    catch (err) {
+        res.send({ status: 400, message: err.message });
+    }
+}));
+app.post("/bid/deleteBid", a, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { bidId } = req.body;
+        const deletebid = yield (0, bidhandler_1.deleteBid)(bidId)
+            .then((response) => res.send(response))
+            .catch((err) => res.send({ status: 400, message: err.message }));
+    }
+    catch (err) {
+        res.send({ status: 400, message: err.message });
     }
 }));

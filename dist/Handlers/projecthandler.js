@@ -126,16 +126,17 @@ function deleteProject(projectID) {
                 where: {
                     project_id: projectID
                 }
-            });
-            if (deleteProject) {
-                return {
-                    status: 200,
-                    message: "Project Removed Successfuly"
-                };
-            }
+            }).then(() => __awaiter(this, void 0, void 0, function* () {
+                const deletebids = yield prisma.bid.deleteMany({
+                    where: {
+                        project_id: projectID
+                    }
+                });
+            }))
+                .catch((err) => { return { status: 402, message: err.message }; });
             return {
-                status: 402,
-                message: "Internal Error"
+                status: 200,
+                message: "Project Removed Successfuly"
             };
         }
         catch (err) {

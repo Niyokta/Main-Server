@@ -5,6 +5,7 @@ import { reSignAccessToken, signAccessToken, signRefreshToken, verifyToken } fro
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import { createNewProject, deleteProject, findProject, findProjects,projectPayload } from "./Handlers/projecthandler";
+import { bidPayload, deleteBid, findBid, findBids, placeBid } from "./Handlers/bidhandler";
 
 const prisma = new PrismaClient()
 const app = express();
@@ -264,12 +265,6 @@ app.post("/project/getProjects",a,async(req:Request,res)=>{
 app.post("/project/createProject",a,async(req:Request,res)=>{
     try{
         const {title,description,client_id,max_budget}=req.body
-        const payload:projectPayload={
-            title:title,
-            description:description,
-            client_id:client_id,
-            max_budget:max_budget
-        }
         const newProject=await createNewProject({title,description,client_id,max_budget})
         .then((response)=>res.send(response))
         .catch((err)=>res.send(err.message))
@@ -298,3 +293,64 @@ app.post("/project/deleteProject",a,async(req:Request,res)=>{
     }
 })
 
+
+
+//bid Endpoints
+
+app.post("/bid/getBid",a,async(req:Request,res)=>{
+    try{
+        const {bidID}=req.body
+        const getbid=await findBid(bidID)
+        .then((response)=>res.send(response))
+        .catch((err)=>{res.send({status:400,message:err.message})})
+    }
+    catch(err:any){
+        res.send({
+            status:400,
+            message:err.message
+        })
+    }
+})
+
+app.post("/bid/getBids",a,async (req:Request,res)=>{
+    try{
+        const {projectID}=req.body
+        const bids=await findBids(projectID)
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send({status:400,messsage:err.message}))
+    }
+    catch(err:any){
+        res.send({status:400,message:err.message})
+    }
+})
+
+app.post("/bid/placeBid",a,async (req:Request,res)=>{
+    try{
+        const {freelancerID,projectID,bidingPrice,freelancerName,proposal}=req.body
+        // const payload:bidPayload={
+        //     freelancerID:freelancer_id,
+        //     projectID:project_id,
+        //     bidingPrice:bidding_price,
+        //     freelancerName:freelancer_name,
+        //     proposal:proposal
+        // }
+        const newBid=await placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal})
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send({status:400,message:err.message}))
+    }
+    catch(err:any){
+        res.send({status:400,message:err.message})
+    }
+})
+
+app.post("/bid/deleteBid",a,async(req:Request,res)=>{
+    try{
+        const {bidId}=req.body
+        const deletebid=await deleteBid(bidId)
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send({status:400,message:err.message}))
+    }
+    catch(err:any){
+        res.send({status:400,message:err.message})
+    }
+})

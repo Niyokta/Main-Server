@@ -111,18 +111,20 @@ export async function deleteProject(projectID: number) {
             where: {
                 project_id: projectID
             }
+        }).then(async()=>{
+            const deletebids=await prisma.bid.deleteMany({
+                where:{
+                    project_id:projectID
+                }
+            })
         })
-        if(deleteProject){
-            return{
-                status:200,
-                message:"Project Removed Successfuly"
-            }
-        }
-
+        .catch((err)=>{return{status:402,message:err.message}})
+        
         return{
-            status:402,
-            message:"Internal Error"
+            status:200,
+            message:"Project Removed Successfuly"
         }
+        
     }
     catch (err: any) {
         return {
