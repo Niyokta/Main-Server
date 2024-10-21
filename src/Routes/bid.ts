@@ -1,8 +1,10 @@
 import express,{Request} from "express"
 import { findBid,findBids,placeBid,deleteBid } from "../Handlers/bidhandler"
+import { authMiddleware } from "../Middleware"
+
 const bidRouter=express.Router()
 
-bidRouter.post("/getBid",async(req:Request,res)=>{
+bidRouter.post("/getBid",authMiddleware,async(req:Request,res)=>{
     try{
         const {bidID}=req.body
         const getbid=await findBid(bidID)
@@ -17,7 +19,7 @@ bidRouter.post("/getBid",async(req:Request,res)=>{
     }
 })
 
-bidRouter.post("/getBids",async (req:Request,res)=>{
+bidRouter.post("/getBids",authMiddleware,async (req:Request,res)=>{
     try{
         const {projectID}=req.body
         const bids=await findBids(projectID)
@@ -29,7 +31,7 @@ bidRouter.post("/getBids",async (req:Request,res)=>{
     }
 })
 
-bidRouter.post("/placeBid",async (req:Request,res)=>{
+bidRouter.post("/placeBid",authMiddleware,async (req:Request,res)=>{
     try{
         const {freelancerID,projectID,bidingPrice,freelancerName,proposal}=req.body
         const newBid=await placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal})
@@ -41,7 +43,7 @@ bidRouter.post("/placeBid",async (req:Request,res)=>{
     }
 })
 
-bidRouter.post("/deleteBid",async(req:Request,res)=>{
+bidRouter.post("/deleteBid",authMiddleware,async(req:Request,res)=>{
     try{
         const {bidId}=req.body
         const deletebid=await deleteBid(bidId)
