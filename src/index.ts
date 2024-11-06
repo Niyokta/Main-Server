@@ -12,7 +12,7 @@ const cookieparser = cookieParser()
 app.use(cookieparser)
 
 app.use(cors({
-    origin: ["http://localhost:3000/*","*",],
+    origin: ["http://localhost:3000","*",],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'user-agent', 'X-Client-Type']
