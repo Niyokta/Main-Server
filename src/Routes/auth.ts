@@ -39,13 +39,13 @@ authRouter.post("/signin",  async (req: Request, res) => {
                         httpOnly: true,
                         secure: true,
                         sameSite: "none",
-                        domain:'http://localhost:3000/Dashboard'
+                        domain:'http://localhost:3000'
                     })
                     res.cookie("refreshToken", refreshToken, {
                         httpOnly: true,
                         secure: true,
                         sameSite: "none",
-                        domain:'http://localhost:3000/Dashboard'
+                        domain:'http://localhost:3000'
                     })
                     res.send({
                         status: "200",
