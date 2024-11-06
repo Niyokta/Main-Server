@@ -25,7 +25,7 @@ authRouter.post("/signin",  async (req: Request, res) => {
                 }
                 const accessToken = signAccessToken(payload)
                 const refreshToken = signRefreshToken(payload)
-                const isMobile = req.headers['user-agent']?.includes('Mobile') || req.headers['X-Client-Type'] === 'mobile';
+                const isMobile = req.headers['user-agent']==='mobile' || req.headers['X-Client-Type'] === 'mobile';
                 if (isMobile) {
                     res.send({
                         status: "200",
@@ -38,12 +38,12 @@ authRouter.post("/signin",  async (req: Request, res) => {
                     res.cookie("accessToken", accessToken, {
                         httpOnly: true,
                         secure: true,
-                        sameSite: "strict"
+                        sameSite: "none"
                     })
                     res.cookie("refreshToken", refreshToken, {
                         httpOnly: true,
                         secure: true,
-                        sameSite: "strict"
+                        sameSite: "none"
                     })
                     res.send({
                         status: "200",
@@ -109,13 +109,13 @@ authRouter.post("/create-account",  async (req: Request, res) => {
 
 authRouter.get("/verifyToken", (req, res) => {
     try {
-        const isMobile = req.headers['user-agent']?.includes('Mobile') || req.headers['X-Client-Type'] === 'mobile';
+        const isMobile = req.headers['user-agent']==='mobile' || req.headers['X-Client-Type'] === 'mobile';
         var token = null
         if (isMobile) {
             token = req.headers["authorization"]
         }
         else {
-            token = req.cookies.refreshToken
+            token = req.cookies.accessToken
         }
         if (token) {
             const verify = verifyToken(token)
@@ -143,7 +143,7 @@ authRouter.get("/verifyToken", (req, res) => {
 
 authRouter.get("/refreshToken", (req, res) => {
     try {
-        const isMobile = req.headers['user-agent']?.includes('Mobile') || req.headers['X-Client-Type'] === 'mobile';
+        const isMobile = req.headers['user-agent']==='mobile' || req.headers['X-Client-Type'] === 'mobile';
         var refreshToken = null
         if (isMobile) {
             refreshToken = req.headers["authorization"]
@@ -173,7 +173,7 @@ authRouter.get("/refreshToken", (req, res) => {
                     res.cookie("accessToken", accessToken, {
                         httpOnly: true,
                         secure: true,
-                        sameSite: "strict"
+                        sameSite: "none"
                     })
                     res.send({
                         status: "200",
