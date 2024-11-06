@@ -38,12 +38,14 @@ authRouter.post("/signin",  async (req: Request, res) => {
                     res.cookie("accessToken", accessToken, {
                         httpOnly: true,
                         secure: true,
-                        sameSite: "none"
+                        sameSite: "none",
+                        domain:'http://localhost:3000/Dashboard'
                     })
                     res.cookie("refreshToken", refreshToken, {
                         httpOnly: true,
                         secure: true,
-                        sameSite: "none"
+                        sameSite: "none",
+                        domain:'http://localhost:3000/Dashboard'
                     })
                     res.send({
                         status: "200",
@@ -173,7 +175,8 @@ authRouter.get("/refreshToken", (req, res) => {
                     res.cookie("accessToken", accessToken, {
                         httpOnly: true,
                         secure: true,
-                        sameSite: "none"
+                        sameSite: "none",
+                        domain:'http://localhost:3000/Dashboard'
                     })
                     res.send({
                         status: "200",
