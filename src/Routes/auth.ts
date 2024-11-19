@@ -68,7 +68,8 @@ authRouter.post("/create-account", async (req: Request, res) => {
             data: {
                 username: username,
                 password: password,
-                email: email
+                email: email,
+                phoneNumber: 96255
             }
         })
         if (newuser) {
