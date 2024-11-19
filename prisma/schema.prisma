@@ -24,6 +24,51 @@ model Users {
   phoneNumber Int @unique @default(0000000000)
 }
 
+model NewUsers{
+   id         Int        @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  username   String @unique
+  password   String
+  email      String @unique
+  phoneNumber Int @unique @default(0000000000)
+  firstName String
+  lastName String
+  profilePicture String
+  verified Boolean @default(false)
+  verificationCode String
+  resetPasswordCode String
+  resetPasswordCodeExpiry DateTime
+  dateOfBirth DateTime
+  experience String
+  socialMediaLinks String[]
+  skills String[]
+  bio String
+  role String
+  location String
+  education String
+  specialization String
+  hourlyRate Int
+  availability String
+  status String
+  projectsCompleted Int
+  rating Int
+  reviews String[]
+  highestBid Int
+  lowestBid Int
+  totalEarnings Int
+  totalProjects Int
+  totalClients Int
+  totalFreelancers Int
+  totalBids Int
+  totalActiveProjects Int
+  totalCompletedProjects Int
+  totalPendingProjects Int
+  totalCancelledProjects Int
+  portfolio String[]
+  
+}
+
 model Project {
   project_id      Int      @id @default(autoincrement())
   title           String
