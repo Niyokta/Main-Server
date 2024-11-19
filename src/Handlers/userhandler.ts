@@ -13,7 +13,7 @@ export async function getuserdetails(accessToken:string){
         const decodedtoken= jwt.verify(accessToken,publickey)
         const userid=await (decodedtoken as JwtPayload).id
         console.log("id is ",userid)
-        const user=await prisma.users.findUnique({
+        const user=await prisma.users.findFirst({
             where:{
                 id:userid
             }
