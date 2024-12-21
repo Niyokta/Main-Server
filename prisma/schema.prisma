@@ -29,8 +29,8 @@ model Users {
 model Education {
   id          Int      @id @default(autoincrement())
   courseName        String   
-  yearFrom    Int      
-  yearTo      Int      
+  yearFrom    String      
+  yearTo      String      
   institute   String   
   userId      Int      
   user        Users     @relation(fields: [userId], references: [id])
@@ -40,8 +40,8 @@ model Experience {
   id          Int      @id @default(autoincrement())
   title       String   // Job Title
   company     String   // Company Name
-  yearFrom    Int      // Start Year
-  yearTo      Int?     // End Year (nullable for ongoing jobs)
+  yearFrom    String      // Start Year
+  yearTo      String?     // End Year (nullable for ongoing jobs)
   description String   // Job Description
   userId      Int      // Foreign key to the User
   user        Users     @relation(fields: [userId], references: [id])

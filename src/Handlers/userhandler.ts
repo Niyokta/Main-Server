@@ -7,16 +7,16 @@ const prisma=new PrismaClient()
 
 type edu={
     coursename:string,
-    yearfrom:number,
-    yearto:number,
+    yearfrom:string,
+    yearto:string,
     institutename:string
 }
 
 type exp={
     title:string,
     company:string,
-    from:number,
-    to:number,
+    from:string,
+    to:string,
     description:string
 }
 
