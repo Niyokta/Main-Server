@@ -29,7 +29,8 @@ export async function getuserdetails(accessToken:string){
         const user=await prisma.users.findFirst({
             where:{
                 id:userid
-            }
+            },
+            include:{educations:true,experiences:true}
         })
         if(!user) return {status:"400",message:"User Not Found"}
         return {status:"200",message:"user found !",user:user}
