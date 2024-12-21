@@ -22,7 +22,31 @@ model Users {
   password   String
   email      String @unique
   phoneNumber Int @unique @default(0000000000)
+  educations   Education[] // Relation to the Education model
+  experiences  Experience[] // Relation to Experience model
 }
+
+model Education {
+  id          Int      @id @default(autoincrement())
+  courseName        String   
+  yearFrom    Int      
+  yearTo      Int      
+  institute   String   
+  userId      Int      
+  user        Users     @relation(fields: [userId], references: [id])
+}
+
+model Experience {
+  id          Int      @id @default(autoincrement())
+  title       String   // Job Title
+  company     String   // Company Name
+  yearFrom    Int      // Start Year
+  yearTo      Int?     // End Year (nullable for ongoing jobs)
+  description String   // Job Description
+  userId      Int      // Foreign key to the User
+  user        Users     @relation(fields: [userId], references: [id])
+}
+
 
 model Project {
   project_id      Int      @id @default(autoincrement())
