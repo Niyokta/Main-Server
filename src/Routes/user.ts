@@ -24,14 +24,8 @@ userRouter.post("/addEducation",authMiddleware, async (req, res) => {
     try {
         const accessToken = req.headers['authorization']
         const {cname,from,to,institute}=req.body;
-        const edu={
-            coursename:cname,
-            yearfrom:from,
-            yearto:to,
-            institutename:institute
-        }
         if (accessToken) {
-            const add = await addEducation(accessToken,edu);
+            const add = await addEducation(accessToken,cname,from,to,institute);
             res.send(add)
             return
         }
@@ -48,16 +42,10 @@ userRouter.post("/addExperience",authMiddleware, async (req, res) => {
     try {
         const accessToken = req.headers['authorization']
         const {title,company,from,to,description}=req.body;
-        const exp={
-            title:title,
-            company:company,
-            from:from,
-            to:to,
-            description:description
-        }
+        
         
         if (accessToken) {
-            const add = await addExperience(accessToken,exp);
+            const add = await addExperience(accessToken,title,company,from,to,description);
             res.send(add)
             return
         }

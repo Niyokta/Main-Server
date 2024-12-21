@@ -40,7 +40,7 @@ export async function getuserdetails(accessToken:string){
     }
 }
 
-export async function addEducation(accessToken:string,education:edu){
+export async function addEducation(accessToken:string,cname:string,from:string,to:string,institute:string){
     try{
         const decodedtoken= jwt.verify(accessToken,publickey)
         const userid=await (decodedtoken as JwtPayload).id
@@ -52,10 +52,10 @@ export async function addEducation(accessToken:string,education:edu){
                 educations:{
                     create:[
                         {
-                            courseName:education.coursename,
-                            yearFrom:education.yearfrom,
-                            yearTo:education.yearto,
-                            institute:education.institutename
+                            courseName:cname,
+                            yearFrom:from,
+                            yearTo:to,
+                            institute:institute
                         }
                     ]
                 }
@@ -67,7 +67,7 @@ export async function addEducation(accessToken:string,education:edu){
         return {status:"400",message:err.message}
     }
 }
-export async function addExperience(accessToken:string,experience:exp){
+export async function addExperience(accessToken:string,title:string,company:string,from:string,to:string,description:string){
     try{
         const decodedtoken= jwt.verify(accessToken,publickey)
         const userid=await (decodedtoken as JwtPayload).id
@@ -79,11 +79,11 @@ export async function addExperience(accessToken:string,experience:exp){
                 experiences:{
                     create:[
                         {
-                            title:experience.title,
-                            company:experience.company,
-                            yearFrom:experience.from,
-                            yearTo:experience.to,
-                            description:experience.description
+                            title:title,
+                            company:company,
+                            yearFrom:from,
+                            yearTo:to,
+                            description:description
                         }
                     ]
                 }
