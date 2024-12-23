@@ -21,14 +21,16 @@ model Users {
   username   String @unique
   password   String
   email      String @unique
-  phoneNumber Int @unique @default(0000000000)
+  phoneNumber Int @default(0000000000)
   educations   Education[] // Relation to the Education model
   experiences  Experience[] // Relation to Experience model
+  projects Project[]
+  bids Bid[]
 }
 
 model Education {
   id          Int      @id @default(autoincrement())
-  courseName        String   
+  courseName  String   
   yearFrom    String      
   yearTo      String      
   institute   String   
@@ -65,7 +67,7 @@ model Project {
   completed_at    DateTime?
   payment_status  Boolean @default(false)
   bids            Bid[]
-
+  user        Users     @relation(fields: [client_id], references: [id])
   @@index([client_id])
 }
 
@@ -81,7 +83,7 @@ model Bid {
   submitted_at    DateTime @default(now())                
   client_rating   Int?                                   
   is_active       Boolean @default(true)                       
-
+  user        Users     @relation(fields: [freelancer_id], references: [id])
   project         Project  @relation(fields: [project_id], references: [project_id]) 
   @@index([project_id])                                   
 }
