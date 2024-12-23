@@ -67,13 +67,11 @@ export async function addEducation(user:number,cname:string,from:string,to:strin
         return {status:"400",message:err.message}
     }
 }
-export async function addExperience(accessToken:string,title:string,company:string,from:string,to:string,description:string){
+export async function addExperience(user:number,title:string,company:string,from:string,to:string,description:string){
     try{
-        const decodedtoken= jwt.verify(accessToken,publickey)
-        const userid=await (decodedtoken as JwtPayload).id
         const updatedExperience=await prisma.users.update({
             where:{
-                id:userid
+                id:user
             },
             data:{
                 experiences:{
