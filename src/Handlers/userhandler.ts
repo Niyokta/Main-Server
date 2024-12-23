@@ -44,23 +44,35 @@ export async function addEducation(accessToken:string,cname:string,from:string,t
     try{
         const decodedtoken= jwt.verify(accessToken,publickey)
         const userid=await (decodedtoken as JwtPayload).id
-        const updatedEducation=await prisma.users.update({
-            where:{
-                id:userid
+        const newEducation = await prisma.education.create({
+            data: {
+                courseName: cname,
+                yearFrom: from,
+                yearTo: to,
+                institute: institute,
+                user: {
+                    connect: { id: userid }, // Link the user by ID
+                },
             },
-            data:{
-                educations:{
-                    create:[
-                        {
-                            courseName:cname,
-                            yearFrom:from,
-                            yearTo:to,
-                            institute:institute
-                        }
-                    ]
-                }
-            }
-        })
+        });
+        
+        // const updatedEducation=await prisma.users.update({
+        //     where:{
+        //         id:userid
+        //     },
+        //     data:{
+        //         educations:{
+        //             create:[
+        //                 {
+        //                     courseName:cname,
+        //                     yearFrom:from,
+        //                     yearTo:to,
+        //                     institute:institute
+        //                 }
+        //             ]
+        //         }
+        //     }
+        // })
         return {status:"200",message:"Education Added Successfully"};
     }
     catch(err:any){
