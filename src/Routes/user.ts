@@ -23,7 +23,11 @@ userRouter.get("/getuser",authMiddleware, async (req, res) => {
 userRouter.post("/addEducation",authMiddleware, async (req, res) => {
     try {
         const accessToken = req.headers['authorization']
-        const {cname,from,to,institute}=req.body;
+        const {cname,from,to,institute}=await req.body;
+        console.log("cname --> ",cname)
+        console.log("from --> ",from)
+        console.log("to --> ",to)
+        console.log("institute --> ",institute)
         if (accessToken) {
             const add = await addEducation(accessToken,cname,from,to,institute);
             res.send(add)
