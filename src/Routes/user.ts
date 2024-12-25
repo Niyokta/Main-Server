@@ -67,7 +67,7 @@ userRouter.post("/deleteEducation",authMiddleware,async(req,res)=>{
         res.send({status:"400",message:err.message});
     }
 })
-userRouter.post("/deleteEducation",authMiddleware,async(req,res)=>{
+userRouter.post("/deleteExperience",authMiddleware,async(req,res)=>{
     try{
         const {experienceId}=req.body;
         const deleteexperience=deleteExperience(experienceId);
