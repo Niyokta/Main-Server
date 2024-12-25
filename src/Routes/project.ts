@@ -55,7 +55,7 @@ projectRouter.post("/deleteProject", authMiddleware, async (req: Request, res) =
         const { projectID } = req.body
 
         const deleteproject = await deleteProject(projectID)
-        res.send(deleteProject)
+        res.send(deleteproject)
     }
     catch (err: any) {
         res.send({
