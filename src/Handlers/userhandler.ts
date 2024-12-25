@@ -93,3 +93,29 @@ export async function addExperience(user:number,title:string,company:string,from
         return {status:"400",message:err.message}
     }
 }
+export async function deleteEducation(educationId:number){
+    try{
+        const deleteEdu=await prisma.education.delete({
+            where:{
+                id:educationId
+            }
+        })
+        return {satus:"200",message:"Record Deleted Successfully"}
+    }
+    catch(err:any){
+        return {status:"400",message:err.message};
+    }
+}
+export async function deleteExperience(experienceId:number){
+    try{
+        const deleteEdu=await prisma.experience.delete({
+            where:{
+                id:experienceId
+            }
+        })
+        return {satus:"200",message:"Record Deleted Successfully"}
+    }
+    catch(err:any){
+        return {status:"400",message:err.message};
+    }
+}

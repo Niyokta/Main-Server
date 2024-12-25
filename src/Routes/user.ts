@@ -1,6 +1,6 @@
 import express, { Request } from "express"
 import { authMiddleware } from "../Middleware";
-import { getuserdetails,addEducation, addExperience } from "../Handlers/userhandler";
+import { getuserdetails,addEducation, addExperience,deleteEducation,deleteExperience } from "../Handlers/userhandler";
 const userRouter = express.Router();
 
 userRouter.get("/getuser",authMiddleware, async (req, res) => {
@@ -54,6 +54,27 @@ userRouter.post("/addExperience",authMiddleware, async (req, res) => {
             status: "400",
             message: "internal server error"
         })
+    }
+})
+
+userRouter.post("/deleteEducation",authMiddleware,async(req,res)=>{
+    try{
+        const {educationId}=req.body;
+        const deleteeducation=deleteEducation(educationId);
+        res.send(deleteeducation);
+    }
+    catch(err:any){
+        res.send({status:"400",message:err.message});
+    }
+})
+userRouter.post("/deleteEducation",authMiddleware,async(req,res)=>{
+    try{
+        const {experienceId}=req.body;
+        const deleteexperience=deleteExperience(experienceId);
+        res.send(deleteexperience);
+    }
+    catch(err:any){
+        res.send({status:"400",message:err.message});
     }
 })
 
