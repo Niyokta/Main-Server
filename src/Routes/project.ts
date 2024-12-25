@@ -38,10 +38,9 @@ projectRouter.post("/getProjects", authMiddleware, async (req: Request, res) => 
 
 projectRouter.post("/createProject", authMiddleware, async (req: Request, res) => {
     try {
-        const { title, description, client_id, max_budget } = req.body
-        const newProject = await createNewProject({ title, description, client_id, max_budget })
-            .then((response) => res.send(response))
-            .catch((err) => res.send(err.message))
+        const { title, description, client_id, max_budget, min_budget, client_name, skills, categories } = req.body
+        const newProject = await createNewProject({ title, description, client_id, max_budget, min_budget, client_name, skills, categories })
+        res.send(newProject);
     }
     catch (err: any) {
         res.send({
@@ -56,8 +55,7 @@ projectRouter.post("/deleteProject", authMiddleware, async (req: Request, res) =
         const { projectID } = req.body
 
         const deleteproject = await deleteProject(projectID)
-            .then((response) => res.send(response))
-            .catch((err) => res.send(err.message))
+        res.send(deleteProject)
     }
     catch (err: any) {
         res.send({

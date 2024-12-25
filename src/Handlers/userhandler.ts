@@ -100,7 +100,7 @@ export async function deleteEducation(educationId:number){
                 id:educationId
             }
         })
-        return {satus:"200",message:"Record Deleted Successfully"}
+        return {satus:"200",message:"Record Deleted Successfully"};
     }
     catch(err:any){
         return {status:"400",message:err.message};
@@ -113,7 +113,7 @@ export async function deleteExperience(experienceId:number){
                 id:experienceId
             }
         })
-        return {satus:"200",message:"Record Deleted Successfully"}
+        return {satus:"200",message:"Record Deleted Successfully"};
     }
     catch(err:any){
         return {status:"400",message:err.message};

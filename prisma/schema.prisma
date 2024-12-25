@@ -55,9 +55,11 @@ model Project {
   title           String
   description     String
   client_id       Int
+  client_name     String @default("Unknown")
   category        String[] @default([])
   skills_required String[] @default([])
-  max_budget      Int
+  max_budget      String
+  min_budget      String @default("0")
   status          String @default("pending")
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
