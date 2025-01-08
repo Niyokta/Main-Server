@@ -33,8 +33,8 @@ bidRouter.post("/getBids",authMiddleware,async (req:Request,res)=>{
 
 bidRouter.post("/placeBid",authMiddleware,async (req:Request,res)=>{
     try{
-        const {freelancerID,projectID,bidingPrice,freelancerName,proposal}=req.body
-        const newBid=await placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal})
+        const {freelancerID,projectID,bidingPrice,freelancerName,proposal,projectTitle,clientName,freelancerRating,clientCountry}=req.body
+        const newBid=await placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal,projectTitle,clientName,freelancerRating,clientCountry})
         .then((response)=>res.send(response))
         .catch((err)=>res.send({status:400,message:err.message}))
     }

@@ -49,7 +49,7 @@ authRouter.post("/signin", async (req: Request, res) => {
 
 authRouter.post("/create-account", async (req: Request, res) => {
     try {
-        const { username, password, email } = req.body
+        const { username, password, email,phoneNumber,birthDate,workingHours,country,linkedin,github,x } = req.body
         const user = await prisma.users.findFirst({
             where: {
                 username: username?.toString()
@@ -69,7 +69,13 @@ authRouter.post("/create-account", async (req: Request, res) => {
                 username: username,
                 password: password,
                 email: email,
-                phoneNumber: 12
+                phoneNumber: phoneNumber,
+                linkedin:linkedin,
+                github:github,
+                x:x,
+                country:country,
+                workingHours:workingHours,
+                DOB:birthDate
             }
         })
         if (newuser) {

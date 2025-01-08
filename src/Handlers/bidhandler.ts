@@ -62,7 +62,7 @@ export async function findBids(projectID:number){
     }
 }
 
-export async function placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal}:{freelancerID:number,projectID:number,bidingPrice:number,freelancerName:string,proposal:string}) {
+export async function placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal,projectTitle,clientName,freelancerRating,clientCountry}:{freelancerID:number,projectID:number,bidingPrice:number,freelancerName:string,proposal:string,projectTitle:string,clientName:string,freelancerRating:number,clientCountry:string}) {
     try{
         const checkProject=await prisma.project.findUnique({
             where:{
@@ -93,7 +93,11 @@ export async function placeBid({freelancerID,projectID,bidingPrice,freelancerNam
                 project_id:projectID,
                 bidding_price:bidingPrice,
                 freelancer_name:freelancerName,
-                proposal:proposal
+                proposal:proposal,
+                project_title:projectTitle,
+                client_country:clientCountry,
+                client_name:clientName,
+                freelancer_rating:freelancerRating
             }
         }).catch((err)=>{return{status:402,message:err.message}})
         if(!bid) return{status:403,message:"Internal Error"}

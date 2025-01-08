@@ -38,8 +38,8 @@ projectRouter.post("/getProjects", authMiddleware, async (req: Request, res) => 
 
 projectRouter.post("/createProject", authMiddleware, async (req: Request, res) => {
     try {
-        const { title, description, client_id, max_budget, min_budget, client_name, skills, categories } = req.body
-        const newProject = await createNewProject({ title, description, client_id, max_budget, min_budget, client_name, skills, categories })
+        const { title, description, client_id, max_budget, min_budget, client_name, skills, categories,clientCountry } = req.body
+        const newProject = await createNewProject({ title, description, client_id, max_budget, min_budget, client_name, skills, categories,clientCountry})
         res.send(newProject);
     }
     catch (err: any) {

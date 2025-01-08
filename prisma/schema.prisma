@@ -22,6 +22,13 @@ model Users {
   password   String
   email      String @unique
   phoneNumber Int @default(0000000000)
+  linkedin String @default("")
+  github String @default("")
+  x String @default("")
+  freelancer_rating Int @default(0)
+  country String @default("")
+  workingHours String @default("")
+  DOB String @default("")
   educations   Education[] // Relation to the Education model
   experiences  Experience[] // Relation to Experience model
   projects Project[]
@@ -58,6 +65,7 @@ model Project {
   client_name     String @default("Unknown")
   category        String[] @default([])
   skills_required String[] @default([])
+  client_country String @default("")
   max_budget      String
   min_budget      String @default("0")
   status          String @default("pending")
@@ -76,7 +84,11 @@ model Project {
 model Bid {
   bid_id          Int      @id @default(autoincrement())  
   freelancer_id   Int                                     
-  project_id      Int                                     
+  project_id      Int    
+  project_title String @default("")
+  client_name String @default("")
+  freelancer_rating Int @default(0)
+  client_country String @default("")                                
   bidding_price   Int                                    
   freelancer_name String                              
   proposal        String                        

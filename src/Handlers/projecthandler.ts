@@ -8,7 +8,8 @@ export type projectPayload = {
     client_id: number,
     max_budget: string,
     skills_required:string[],
-    category:string[]
+    category:string[],
+    client_country:string
 }
 export async function findProject(projectID: number) {
     try {
@@ -55,7 +56,7 @@ export async function findProjects(clientID: number) {
     catch (err: any) { return { status: 400, message: err.message } }
 }
 
-export async function createNewProject({ title, description, client_id, max_budget,skills,categories,client_name,min_budget }: { title: string, description: string, client_id: number, max_budget: string ,skills:string[],categories:string[],client_name:string,min_budget:string}) {
+export async function createNewProject({ title, description, client_id, max_budget,skills,categories,client_name,min_budget,clientCountry }: { title: string, description: string, client_id: number, max_budget: string ,skills:string[],categories:string[],client_name:string,min_budget:string,clientCountry:string}) {
     try {
         const payload: projectPayload = {
             title: title,
@@ -63,7 +64,8 @@ export async function createNewProject({ title, description, client_id, max_budg
             client_id: client_id,
             max_budget: max_budget,
             skills_required:skills,
-            category:categories
+            category:categories,
+            client_country:clientCountry
         }
         const checkUser = await prisma.users.findUnique({
             where: {
@@ -85,7 +87,8 @@ export async function createNewProject({ title, description, client_id, max_budg
                 min_budget:min_budget,
                 skills_required:skills,
                 category:categories,
-                client_name:client_name
+                client_name:client_name,
+                client_country:clientCountry
             }
         })
         if (!newProject) {
