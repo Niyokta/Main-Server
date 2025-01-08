@@ -21,7 +21,7 @@ model Users {
   username   String @unique
   password   String
   email      String @unique
-  phoneNumber Int @default(0000000000)
+  phoneNumber String @default("0000000000")
   linkedin String @default("")
   github String @default("")
   x String @default("")
