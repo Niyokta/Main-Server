@@ -33,6 +33,20 @@ export async function findProject(projectID: number) {
     catch (err: any) { return { status: 400, message: err.message } }
 }
 
+export async function getAllProjects() {
+    try{
+        const allprojects=await prisma.project.findMany();
+        return {
+            status:"200",
+            messgae:"Projects Found",
+            projects:allprojects
+        }
+    }
+    catch(err:any){
+        return {status:"400",message:err.message}
+    }
+}
+
 export async function findProjects(clientID: number) {
     try {
 
