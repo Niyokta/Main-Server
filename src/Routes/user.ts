@@ -1,6 +1,6 @@
 import express, { Request } from "express"
 import { authMiddleware } from "../Middleware";
-import { getuserdetails,addEducation, addExperience,deleteEducation,deleteExperience } from "../Handlers/userhandler";
+import { getuserdetails,addEducation, addExperience,deleteEducation,deleteExperience,getAllUsers } from "../Handlers/userhandler";
 const userRouter = express.Router();
 
 userRouter.get("/getuser",authMiddleware, async (req, res) => {
@@ -12,6 +12,18 @@ userRouter.get("/getuser",authMiddleware, async (req, res) => {
             return
         }
         res.send({ status: "400", message: "Token not present" })
+    }
+    catch (err: any) {
+        res.send({
+            status: "400",
+            message: "internal server error"
+        })
+    }
+})
+userRouter.get("/getAllusers",authMiddleware, async (req, res) => {
+    try {
+        const allUsers=await getAllUsers();
+        res.send(allUsers)
     }
     catch (err: any) {
         res.send({

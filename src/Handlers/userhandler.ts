@@ -40,6 +40,28 @@ export async function getuserdetails(accessToken:string){
     }
 }
 
+export async function getAllUsers() {
+    try{
+        const allusers=await prisma.users.findMany();
+        return{
+            status:"200",
+            message:"Users Fetches Successfully",
+            users:allusers
+        }
+    }
+    catch(err){
+        if(err instanceof Error)
+        return{
+            status:"400",
+            message:err.message
+        }
+        else return{
+            status:"400",
+            message:"Internal Server Error"
+        }
+    }
+}
+
 export async function addEducation(user:number,cname:string,from:string,to:string,institute:string){
     try{
         
