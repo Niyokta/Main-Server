@@ -44,8 +44,17 @@ export async function getAllUsers() {
     try{
         const allusers=await prisma.users.findMany({
             select:{
+                username:true,
+                email:true,
+                phoneNumber:true,
+                linkedin:true,
+                github:true,
+                x:true,
+                country:true,
+                workingHours:true,
+                DOB:true,
                 password:false
-            }
+            },
         });
         return{
             status:"200",
