@@ -42,7 +42,11 @@ export async function getuserdetails(accessToken:string){
 
 export async function getAllUsers() {
     try{
-        const allusers=await prisma.users.findMany();
+        const allusers=await prisma.users.findMany({
+            select:{
+                password:false
+            }
+        });
         return{
             status:"200",
             message:"Users Fetches Successfully",
