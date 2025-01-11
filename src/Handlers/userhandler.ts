@@ -39,6 +39,39 @@ export async function getuserdetails(accessToken:string){
         return {status:"400",message:err.message}
     }
 }
+export async function getUserByUsername(username:string){
+    try{    
+        const user=await prisma.users.findUnique({
+            where:{
+                username:username
+            },
+            include:{
+                educations:true,projects:true,experiences:true,
+            }
+            
+        })
+        if(!user) return{status:"401",message:"User Not Found"}
+        const payload={
+            username:user.username,
+            email:user.email,
+            phoneNumber:user.phoneNumber,
+            linkedin:user.linkedin,
+            github:user.github,
+            x:user.x,
+            workingHours:user.workingHours,
+            DOB:user.DOB,
+            freelancer_rating:user.freelancer_rating,
+            country:user.country,
+            educations:user.educations,
+            experience:user.experiences,
+            createdAt:user.createdAt
+        }
+        return {status:"200",message:"User Found Successfully",user:payload}
+    }
+    catch(err){
+        return{status:"400",message:err instanceof Error?err.message:"Internal Server Error"}
+    }
+}
 
 export async function getAllUsers() {
     try{
