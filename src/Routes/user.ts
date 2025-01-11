@@ -20,7 +20,7 @@ userRouter.get("/getuser",authMiddleware, async (req, res) => {
         })
     }
 })
-userRouter.post("/getuserByUsername",authMiddleware, async (req, res) => {
+userRouter.post("/getuserByUsername", async (req, res) => {
     try {
         const {username}=req.body;
         const response=await getUserByUsername(username);
