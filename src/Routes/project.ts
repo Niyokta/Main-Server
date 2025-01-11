@@ -5,7 +5,7 @@ import { authMiddleware } from "../Middleware"
 const projectRouter = express.Router()
 
 
-projectRouter.post("/getProject", authMiddleware, async (req: Request, res) => {
+projectRouter.post("/getProject", async (req: Request, res) => {
     try {
         const { projectID } = req.body
         const project = await findProject(projectID)
