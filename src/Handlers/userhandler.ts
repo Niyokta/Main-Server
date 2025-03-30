@@ -30,7 +30,11 @@ export async function getuserdetails(accessToken:string){
             where:{
                 id:userid
             },
-            include:{educations:true,experiences:true,projects:true,bids:true}
+            include:{educations:true,experiences:true,projects:{
+                include:{
+                    bids:true
+                }
+            },bids:true}
         })
         if(!user) return {status:"400",message:"User Not Found"}
         return {status:"200",message:"user found !",user:user}
