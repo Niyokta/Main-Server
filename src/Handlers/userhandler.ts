@@ -32,7 +32,11 @@ export async function getuserdetails(accessToken:string){
             },
             include:{educations:true,experiences:true,projects:{
                 include:{
-                    bids:true
+                    bids:{
+                        include:{
+                            user:true
+                        }
+                    }
                 }
             },bids:true}
         })
