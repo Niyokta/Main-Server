@@ -34,7 +34,19 @@ export async function getuserdetails(accessToken:string){
                 include:{
                     bids:{
                         include:{
-                            user:true
+                            user:{
+                                select:{
+                                    username:true,
+                                    email:true,
+                                    country:true,
+                                    linkedin:true,
+                                    github:true,
+                                    x:true,
+                                    phoneNumber:true,
+                                    freelancer_rating:true,
+                                    workingHours:true
+                                }
+                            }
                         }
                     }
                 }
