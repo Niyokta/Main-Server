@@ -1,1 +1,1 @@
-{"root":["./src/index.ts"],"version":"5.6.2"}
+{"root":["./src/index.ts","./src/Handlers/bidhandler.ts","./src/Handlers/projecthandler.ts","./src/Handlers/tokenhandler.ts","./src/Handlers/userhandler.ts","./src/Middleware/authenticationMiddleware.ts","./src/Middleware/index.ts","./src/Routes/auth.ts","./src/Routes/bid.ts","./src/Routes/index.ts","./src/Routes/project.ts","./src/Routes/user.ts"],"version":"5.8.2"}

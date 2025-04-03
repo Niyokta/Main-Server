@@ -62,6 +62,55 @@ export async function findBids(projectID:number){
     }
 }
 
+export async function acceptBid({bidId}:{bidId:number}) {
+    try{
+        console.log("inside accepted bid : ",bidId)
+        if(bidId===undefined){
+            return{
+                status:400,
+                message:"BidId is not defined"
+            }
+        }
+        const bid=await prisma.bid.findUnique({
+            where:{
+                bid_id:bidId
+            },
+            include:{
+                user:true,
+                project:true
+            }
+        })
+        const projectId=bid?.project_id;
+        const closingprice=bid?.bidding_price
+        const userId=bid?.user.id
+        const updatedBid=await prisma.bid.update({
+            where:{
+                bid_id:bidId,
+            },
+            data:{
+                status:"accepted",
+            }
+        })
+        const updatedProject=await prisma.project.update({
+            where:{
+                project_id:projectId
+            },
+            data:{
+                status:"ongoing",
+                closing_price:closingprice,
+                assigned_to:userId
+            }
+        })
+
+        return({
+            status:200,
+            message:"Bid Accepted Successfully"
+        })
+    }
+    catch(err:any){
+        return{status:400,message:err.message}
+    }
+}
 export async function placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal,projectTitle,clientName,freelancerRating,clientCountry}:{freelancerID:number,projectID:number,bidingPrice:number,freelancerName:string,proposal:string,projectTitle:string,clientName:string,freelancerRating:number,clientCountry:string}) {
     try{
         const checkProject=await prisma.project.findUnique({

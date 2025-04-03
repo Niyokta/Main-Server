@@ -80,7 +80,7 @@ model Project {
   user        Users     @relation(fields: [client_id], references: [id])
   @@index([client_id])
 }
-
+  
 model Bid {
   bid_id          Int      @id @default(autoincrement())  
   freelancer_id   Int                                     
