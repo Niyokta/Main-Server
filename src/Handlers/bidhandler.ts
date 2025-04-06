@@ -64,7 +64,6 @@ export async function findBids(projectID:number){
 
 export async function acceptBid({bidId}:{bidId:number}) {
     try{
-        console.log("inside accepted bid : ",bidId)
         if(bidId===undefined){
             return{
                 status:400,
@@ -102,6 +101,22 @@ export async function acceptBid({bidId}:{bidId:number}) {
             }
         })
 
+        const projectDetails=await prisma.project.findUnique({
+            where:{
+                project_id:projectId
+            },
+            include:{
+                bids:true
+            }
+        })
+        const bidsOnTheProject=projectDetails?.bids;
+        const bidsToReject=bidsOnTheProject?.filter(bids=>bids.bid_id!=bidId)
+
+        if(bidsToReject!=undefined){
+            for(const bid of bidsToReject){
+                await rejectBid(bid.bid_id);
+            }
+        }
         return({
             status:200,
             message:"Bid Accepted Successfully"
@@ -110,6 +125,34 @@ export async function acceptBid({bidId}:{bidId:number}) {
     catch(err:any){
         return{status:400,message:err.message}
     }
+}
+
+
+export async function rejectBid(bidId:number){
+    try{
+        if(bidId===undefined){
+            return{
+                status:400,
+                message:"BidId is not defined"
+            }
+        }
+        const rejectedBid=await prisma.bid.update({
+            where:{
+                bid_id:bidId
+            },
+            data:{
+                status:"rejected"
+            }
+        })
+        return{
+            status:200,
+            message:"Bid Rejected Successfully"
+        }
+    }   
+    catch(err:any){
+        return{status:400,message:err.message}
+    }
+
 }
 export async function placeBid({freelancerID,projectID,bidingPrice,freelancerName,proposal,projectTitle,clientName,freelancerRating,clientCountry}:{freelancerID:number,projectID:number,bidingPrice:number,freelancerName:string,proposal:string,projectTitle:string,clientName:string,freelancerRating:number,clientCountry:string}) {
     try{
