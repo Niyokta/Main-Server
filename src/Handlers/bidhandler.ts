@@ -24,7 +24,8 @@ export async function findBid(bidID:number){
         }
         return{
             status:200,
-            message:"Big Found Successfully"
+            message:"Big Found Successfully",
+            bid:bid
         }
     }
     catch(err:any){
@@ -210,6 +211,28 @@ export async function deleteBid(bidID:number) {
         }).catch((err)=>{return{status:401,message:err.message}})
 
         return{status:200,message:"Bid Removed Successfully"}
+    }
+    catch(err:any){
+        return{status:400,message:err.message}
+    }
+}
+
+export async function updateBid({bidId,proposal,biddingPrice}:{bidId:number,proposal:string,biddingPrice:number}) {
+    try{
+        const updatedBid=await prisma.bid.update({
+            where:{
+                bid_id:bidId
+            },
+            data:{
+                proposal:proposal,
+                bidding_price:biddingPrice
+            }
+        })
+
+        return{
+            status:200,
+            message:"Bid Updated Successfully"
+        }
     }
     catch(err:any){
         return{status:400,message:err.message}

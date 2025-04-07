@@ -1,5 +1,5 @@
 import express,{Request} from "express"
-import { findBid,findBids,placeBid,deleteBid, acceptBid, rejectBid } from "../Handlers/bidhandler"
+import { findBid,findBids,placeBid,deleteBid, acceptBid, rejectBid, updateBid } from "../Handlers/bidhandler"
 import { authMiddleware } from "../Middleware"
 
 const bidRouter=express.Router()
@@ -78,5 +78,20 @@ bidRouter.post("/rejectBid",authMiddleware,async(req:Request,res)=>{
     }
 
 })
+
+bidRouter.post("/updateBid",authMiddleware,async(req:Request,res)=>{
+    try{
+        const {bidId,proposal,biddingPrice}=req.body;
+        const rejectedBid=await updateBid({bidId,proposal,biddingPrice})
+        .then((response)=>res.send(response))
+        .catch((err)=>res.send({status:400,message:err.message}));
+    }
+    catch(err:any){
+        res.send({status:400,message:err.message})
+    }
+
+})
+
+
 
 export default bidRouter;
