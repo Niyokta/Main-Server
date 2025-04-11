@@ -118,7 +118,7 @@ export async function acceptBid({bidId}:{bidId:number}) {
         const freelancerName=bid?.freelancer_name;
         const clientName=bid?.project.client_name;
         const roomname=[clientName,freelancerName].join("_");
-        await fetch("http://3.6.34.255:3000/api/v1/room/createRoom",{
+        const a=await fetch("http://3.6.34.255:3001/api/v1/room/createRoom",{
             method:"POST",
             headers:{
                 "content-type":"application/json",
@@ -131,6 +131,8 @@ export async function acceptBid({bidId}:{bidId:number}) {
                 freelancerId:freelancerId
             })
         })
+        const b=await a.json();
+        console.log(b)
         return({
             status:200,
             message:"Bid Accepted Successfully"
