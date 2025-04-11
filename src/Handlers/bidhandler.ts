@@ -65,12 +65,6 @@ export async function findBids(projectID:number){
 
 export async function acceptBid({bidId}:{bidId:number}) {
     try{
-        if(bidId===undefined){
-            return{
-                status:400,
-                message:"BidId is not defined"
-            }
-        }
         const bid=await prisma.bid.findUnique({
             where:{
                 bid_id:bidId
@@ -83,6 +77,7 @@ export async function acceptBid({bidId}:{bidId:number}) {
         const projectId=bid?.project_id;
         const closingprice=bid?.bidding_price
         const userId=bid?.user.id
+
         const updatedBid=await prisma.bid.update({
             where:{
                 bid_id:bidId,
@@ -118,6 +113,24 @@ export async function acceptBid({bidId}:{bidId:number}) {
                 await rejectBid(bid.bid_id);
             }
         }
+        const clientId=bid?.project.client_id;
+        const freelancerId=bid?.freelancer_id;
+        const freelancerName=bid?.freelancer_name;
+        const clientName=bid?.project.client_name;
+        const roomname=[clientName,freelancerName].join("_");
+        await fetch("http://3.6.34.255:3000/api/v1/room/createRoom",{
+            method:"POST",
+            headers:{
+                "content-type":"application/json",
+            },
+            body:JSON.stringify({
+                roomName:roomname,
+                clientName:clientName,
+                freelancerName:freelancerName,
+                clientId:clientId,
+                freelancerId:freelancerId
+            })
+        })
         return({
             status:200,
             message:"Bid Accepted Successfully"
