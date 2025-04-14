@@ -4,14 +4,15 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -b"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^6.2.1",
+    "@prisma/client": "^6.6.0",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
@@ -21,10 +22,9 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.21.0",
-    "jsonwebtoken": "^9.0.2",
-    "prisma-client": "^0.0.0"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "prisma": "^6.2.1"
+    "prisma": "^6.6.0"
   }
 }
